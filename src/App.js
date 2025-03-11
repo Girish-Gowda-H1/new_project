@@ -1,10 +1,12 @@
 import './App.css';
-import SvgToCanvas from './components/SvgToCanvas';
+import MyCanvas from './components/SvgToCanvas';
+import MyIcon from './components/Svg';
 
 function App() {
   return (
     <div className="App">
-      <SvgToCanvas/>
+      {/* <MyCanvas/> */}
+      <MyIcon/>
     </div>
   );
 }
