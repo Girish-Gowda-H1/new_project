@@ -24,7 +24,6 @@ function LineDrawer() {
         const y = e.clientY - rect.top;
 
         if (isDrawing) {
-            // Keep the line horizontal or vertical
             const dx = Math.abs(x - currentLine.x1);
             const dy = Math.abs(y - currentLine.y1);
 
@@ -70,14 +69,20 @@ function LineDrawer() {
         const y = e.clientY;
         const line = lines[index];
 
-        // Calculate the offset between mouse and line's starting point
         setDragOffset({ dx: x - line.x1, dy: y - line.y1 });
         setDraggingIndex(index);
     };
 
+    // Handle clicking on a node to start a new line from it
+    const handleNodeClick = (e, x, y) => {
+        e.stopPropagation();
+        setIsDrawing(true);
+        setCurrentLine({ x1: x, y1: y, x2: x, y2: y });
+    };
+
     return (
         <>
-            <h1>Line</h1>
+            <h1>Line Drawer with Nodes</h1>
             <br />
             <svg
                 width="500"
@@ -88,17 +93,37 @@ function LineDrawer() {
                 onMouseUp={handleMouseUp}
             >
                 {lines.map((line, index) => (
-                    <line
-                        key={index}
-                        x1={line.x1}
-                        y1={line.y1}
-                        x2={line.x2}
-                        y2={line.y2}
-                        stroke="black"
-                        strokeWidth="2"
-                        onMouseDown={(e) => startDragging(e, index)}
-                        style={{ cursor: 'move' }}
-                    />
+                    <g key={index}>
+                        {/* Line */}
+                        <line
+                            x1={line.x1}
+                            y1={line.y1}
+                            x2={line.x2}
+                            y2={line.y2}
+                            stroke="black"
+                            strokeWidth="2"
+                            onMouseDown={(e) => startDragging(e, index)}
+                            style={{ cursor: 'move' }}
+                        />
+                        {/* Start Node */}
+                        <circle
+                            cx={line.x1}
+                            cy={line.y1}
+                            r="5"
+                            fill="red"
+                            onMouseDown={(e) => handleNodeClick(e, line.x1, line.y1)}
+                            // style={{ cursor: 'pointer' }}
+                        />
+                        {/* End Node */}
+                        <circle
+                            cx={line.x2}
+                            cy={line.y2}
+                            r="5"
+                            fill="red"
+                            onMouseDown={(e) => handleNodeClick(e, line.x2, line.y2)}
+                            // style={{ cursor: 'pointer' }}
+                        />
+                    </g>
                 ))}
                 {isDrawing && currentLine && (
                     <line
